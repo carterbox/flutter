@@ -88,11 +88,16 @@ Future<void> main(List<String> args) async {
     userMessages: UserMessages(),
   );
 
+  final bool readonly = args.contains('--readonly');
+  args = List<String>.of(args);
+  args.removeWhere((String option) => option == '--readonly');
+
   await runner.run(
     args,
     () => generateCommands(
       verboseHelp: verboseHelp,
       verbose: verbose,
+      readonly: readonly,
     ),
     verbose: verbose,
     muteCommandLogging: muteCommandLogging,
@@ -134,6 +139,7 @@ Future<void> main(List<String> args) async {
 List<FlutterCommand> generateCommands({
   required bool verboseHelp,
   required bool verbose,
+  bool readonly = false,
 }) => <FlutterCommand>[
   AnalyzeCommand(
     verboseHelp: verboseHelp,
@@ -173,7 +179,7 @@ List<FlutterCommand> generateCommands({
     androidSdk: globals.androidSdk,
     logger: globals.logger,
   ),
-  ChannelCommand(verboseHelp: verboseHelp),
+  if (!readonly) ChannelCommand(verboseHelp: verboseHelp),
   CleanCommand(verbose: verbose),
   ConfigCommand(verboseHelp: verboseHelp),
   CustomDevicesCommand(
@@ -190,8 +196,8 @@ List<FlutterCommand> generateCommands({
   DaemonCommand(hidden: !verboseHelp),
   DebugAdapterCommand(verboseHelp: verboseHelp),
   DevicesCommand(verboseHelp: verboseHelp),
-  DoctorCommand(verbose: verbose),
-  DowngradeCommand(verboseHelp: verboseHelp, logger: globals.logger),
+  if (!readonly) DoctorCommand(verbose: verbose),
+  if (!readonly) DowngradeCommand(verboseHelp: verboseHelp, logger: globals.logger),
   DriveCommand(verboseHelp: verboseHelp,
     fileSystem: globals.fs,
     logger: globals.logger,
@@ -213,7 +219,7 @@ List<FlutterCommand> generateCommands({
   LogsCommand(),
   MakeHostAppEditableCommand(),
   PackagesCommand(),
-  PrecacheCommand(
+  if (!readonly) PrecacheCommand(
     verboseHelp: verboseHelp,
     cache: globals.cache,
     logger: globals.logger,
@@ -224,7 +230,7 @@ List<FlutterCommand> generateCommands({
   ScreenshotCommand(fs: globals.fs),
   ShellCompletionCommand(),
   TestCommand(verboseHelp: verboseHelp, verbose: verbose),
-  UpgradeCommand(verboseHelp: verboseHelp),
+  if (!readonly) UpgradeCommand(verboseHelp: verboseHelp),
   SymbolizeCommand(
     stdio: globals.stdio,
     fileSystem: globals.fs,

@@ -81,6 +81,10 @@ class FlutterCommandRunner extends CommandRunner<void> {
     argParser.addOption('packages',
         hide: !verboseHelp,
         help: 'Path to your "package_config.json" file.');
+    argParser.addFlag('read-only',
+        negatable: false,
+        help: 'Hide all flutter subcommands which write to the Flutter SDK cache.\n'
+              'For use with immutable installations of the SDK; sandboxed build environments, for example.');
     if (verboseHelp) {
       argParser.addSeparator('Local build selection options (not normally required):');
     }
