@@ -166,7 +166,16 @@ class FlutterVersion {
   String get engineRevisionShort => _shortGitRevision(engineRevision);
 
   void ensureVersionFile() {
-    globals.fs.file(globals.fs.path.join(Cache.flutterRoot!, 'version')).writeAsStringSync(_frameworkVersion);
+    File versionFile = globals.fs.file(globals.fs.path.join(Cache.flutterRoot!, 'version'));
+    try{
+      // Allow read-only filesystems by checking before writing
+      if (_frameworkVersion == versionFile.readAsStringSync()){
+        return;
+      }
+    } on FileSystemException{
+      // If File is missing or unreadable, try to write anyways.
+    }
+    versionFile.writeAsStringSync(_frameworkVersion);
   }
 
   @override
