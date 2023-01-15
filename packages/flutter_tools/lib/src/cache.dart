@@ -1048,9 +1048,10 @@ class ArtifactUpdater {
       try {
         _ensureExists(tempFile.parent);
         if (tempFile.existsSync()) {
-          tempFile.deleteSync();
+          _logger.printWarning('Using existing file ${tempFile.path}');
+        } else {
+          await _download(url, tempFile, status);
         }
-        await _download(url, tempFile, status);
 
         if (!tempFile.existsSync()) {
           throw Exception('Did not find downloaded file ${tempFile.path}');
@@ -1231,6 +1232,9 @@ class ArtifactUpdater {
 
   /// Clear any zip/gzip files downloaded.
   void removeDownloadedFiles() {
+    if (_platform.environment.containsKey('FLUTTER_KEEP_DOWNLOADS')){
+      return;
+    }
     for (final File file in downloadedFiles) {
       if (!file.existsSync()) {
         continue;
