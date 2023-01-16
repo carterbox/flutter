@@ -88,9 +88,9 @@ Future<void> main(List<String> args) async {
     userMessages: UserMessages(),
   );
 
-  final bool readonly = args.contains('--readonly');
+  final bool readonly = args.contains('--read-only');
   args = List<String>.of(args);
-  args.removeWhere((String option) => option == '--readonly');
+  args.removeWhere((String option) => option == '--read-only');
 
   await runner.run(
     args,
